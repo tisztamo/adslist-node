@@ -1,24 +1,41 @@
-'use strict';
-
+/*globals angular */
 angular.module('adslistApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
-    $scope.awesomeThings = [];
-
-    $http.get('/api/things').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', $scope.awesomeThings);
+  .controller('MainCtrl', function ($scope, $http, Ads, socket) {
+    'use strict';
+    $scope.ads = Ads.query({
+      approved: true
+    }, function () {
+      socket.syncUpdates('ad', $scope.ads);
     });
 
-    $scope.addThing = function() {
-      if($scope.newThing === '') {
-        return;
-      }
-      $http.post('/api/things', { name: $scope.newThing });
-      $scope.newThing = '';
+    $scope.publishedUrl = function(ad) {
+      return window.location.protocol + '//' + window.location.host + '/public/' +
+        ad._id + '/' + ad.token;
     };
 
-    $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
+    $scope.submitAd = function () {
+      if ($scope.newAd === '') {
+        return;
+      }
+      var ad = new Ads({
+        text: $scope.newAd,
+        approved: false,
+        status: 'waitingforreview'
+      });
+      ad.$save();
+      $scope.newAd = '';
+      $scope.previewText = '';
+    };
+
+    $scope.preview = function () {
+      $scope.previewText = $scope.newAd;
+    };
+
+    $scope.publish = function (ad) {
+      $http.post('/api/ads/' + ad._id + '/token').success(function (token) {
+        ad.token = token;
+        ad.published = true;
+      });
     };
 
     $scope.$on('$destroy', function () {

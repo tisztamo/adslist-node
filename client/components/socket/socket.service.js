@@ -2,12 +2,11 @@
 'use strict';
 
 angular.module('adslistApp')
-  .factory('socket', function(socketFactory) {
+  .factory('socket', function (socketFactory, Auth) {
 
-    // socket.io now auto-configures its connection when we ommit a connection url
     var ioSocket = io('', {
-      // Send auth token on connection, you will need to DI the Auth service above
-      // 'query': 'token=' + Auth.getToken()
+      // Send auth token on connection
+      'query': 'token=' + Auth.getToken(),
       path: '/socket.io-client'
     });
 
@@ -35,7 +34,9 @@ angular.module('adslistApp')
          * Syncs item creation/updates on 'model:save'
          */
         socket.on(modelName + ':save', function (item) {
-          var oldItem = _.find(array, {_id: item._id});
+          var oldItem = _.find(array, {
+            _id: item._id
+          });
           var index = array.indexOf(oldItem);
           var event = 'created';
 
@@ -56,8 +57,14 @@ angular.module('adslistApp')
          */
         socket.on(modelName + ':remove', function (item) {
           var event = 'deleted';
-          _.remove(array, {_id: item._id});
+          _.remove(array, {
+            _id: item._id
+          });
           cb(event, item, array);
+        });
+
+        socket.on('error', function (error) {
+          console.warn('Socket error', error);
         });
       },
 
