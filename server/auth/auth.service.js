@@ -23,7 +23,7 @@ function isAuthenticated() {
       if (req.query && req.query.hasOwnProperty('access_token')) {
         req.headers.authorization = 'Bearer ' + req.query.access_token;
       }
-      // allow access_token to be passed through a cookie parameter as well
+      // allow access_token to be passed through a cookie as well
       if (!req.headers.authorization && req.cookies && req.cookies.hasOwnProperty('token')) {
         req.headers.authorization = 'Bearer ' + req.cookies.token.substr(1, req.cookies.token.length - 2);
       }
@@ -32,7 +32,7 @@ function isAuthenticated() {
     })
     // Attach user to request
     .use(function (req, res, next) {
-      User.findById(req.user._id, function (err, user) {
+      User.findOne({userId: req.user.id}, function (err, user) {
         if (err) return next(err);
         if (!user) return res.send(401);
 
@@ -64,7 +64,7 @@ function hasRole(roleRequired) {
  */
 function signToken(id) {
   return jwt.sign({
-    _id: id
+    id: id
   }, config.secrets.session, {
     expiresInMinutes: 60 * 5
   });
@@ -77,7 +77,7 @@ function setTokenCookie(req, res) {
   if (!req.user) return res.json(404, {
     message: 'Something went wrong, please try again.'
   });
-  var token = signToken(req.user._id, req.user.role);
+  var token = signToken(req.user.userId, req.user.role);
   res.cookie('token', JSON.stringify(token));
   res.redirect('/');
 }

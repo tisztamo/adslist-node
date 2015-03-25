@@ -4,7 +4,7 @@ angular.module('adslistApp')
   .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
     var currentUser = {};
     if($cookieStore.get('token')) {
-      currentUser = User.get();
+      currentUser = User.me();
     }
 
     return {
@@ -21,12 +21,12 @@ angular.module('adslistApp')
         var deferred = $q.defer();
 
         $http.post('/auth/local', {
-          email: user.email,
+          userId: user.userId,
           password: user.password
         }).
         success(function(data) {
           $cookieStore.put('token', data.token);
-          currentUser = User.get();
+          currentUser = User.me();
           deferred.resolve(data);
           return cb();
         }).
@@ -62,7 +62,7 @@ angular.module('adslistApp')
         return User.save(user,
           function(data) {
             $cookieStore.put('token', data.token);
-            currentUser = User.get();
+            currentUser = User.me();
             return cb(user);
           },
           function(err) {
@@ -82,7 +82,7 @@ angular.module('adslistApp')
       changePassword: function(oldPassword, newPassword, callback) {
         var cb = callback || angular.noop;
 
-        return User.changePassword({ id: currentUser._id }, {
+        return User.changePassword({ userId: currentUser.userId }, {
           oldPassword: oldPassword,
           newPassword: newPassword
         }, function(user) {

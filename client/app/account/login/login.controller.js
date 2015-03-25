@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('adslistApp')
-  .controller('LoginCtrl', function ($scope, Auth, $location, $window) {
+  .controller('LoginCtrl', function ($scope, Auth, $location) {
     $scope.user = {
-      email: "test@test.com",
-      password: "test"
+      userId: 'test',
+      password: 'test'
     };
     $scope.errors = {};
 
@@ -13,7 +13,7 @@ angular.module('adslistApp')
 
       if (form.$valid) {
         Auth.login({
-            email: $scope.user.email,
+            userId: $scope.user.userId,
             password: $scope.user.password
           })
           .then(function () {
@@ -27,12 +27,9 @@ angular.module('adslistApp')
     };
 
     $scope.loginAsAdmin = function () {
-      $scope.user.email = 'admin@admin.com';
+      $scope.user.userId = 'admin';
       $scope.user.password = 'admin';
       $scope.login($scope.form);
     };
 
-    $scope.loginOauth = function (provider) {
-      $window.location.href = '/auth/' + provider;
-    };
   });

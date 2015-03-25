@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adslistApp')
-  .controller('SignupCtrl', function ($scope, Auth, $location, $window) {
+  .controller('SignupCtrl', function ($scope, Auth, $location) {
     $scope.user = {};
     $scope.errors = {};
 
@@ -11,6 +11,7 @@ angular.module('adslistApp')
       if(form.$valid) {
         Auth.createUser({
           name: $scope.user.name,
+          userId: $scope.user.userId,
           email: $scope.user.email,
           password: $scope.user.password
         })
@@ -29,9 +30,5 @@ angular.module('adslistApp')
           });
         });
       }
-    };
-
-    $scope.loginOauth = function(provider) {
-      $window.location.href = '/auth/' + provider;
     };
   });

@@ -10,12 +10,14 @@ var Ad = require('../api/ad/ad.model');
 
 User.find({}).remove(function () {
   User.create({
+    userId: 'admin',
     provider: 'local',
     role: 'admin',
     name: 'Admin',
     email: 'admin@admin.com',
     password: 'admin'
   }, {
+    userId: 'test',
     provider: 'local',
     name: 'Test User',
     email: 'test@test.com',

@@ -2,8 +2,7 @@
 
 angular.module('adslistApp')
   .factory('User', function ($resource) {
-    return $resource('/api/users/:id/:controller', {
-      id: '@_id'
+    return $resource('/api/users/:userId/:controller', {
     },
     {
       changePassword: {
@@ -12,10 +11,10 @@ angular.module('adslistApp')
           controller:'password'
         }
       },
-      get: {
+      me: {
         method: 'GET',
         params: {
-          id:'me'
+          userId:'me'
         }
       }
 	  });

@@ -11,7 +11,6 @@ var sanitizeHtml = require('sanitize-html');
 
 // Get list of ads
 exports.index = function (req, res) {
-  console.log(req.query);
   Ad.find(req.query).populate('creator').exec(function (err, ads) {
     if (err) {
       return handleError(res, err);
@@ -39,6 +38,7 @@ exports.create = function (req, res) {
     raw.approved = false;
     raw.status = 'waitingforreview';
   }
+  console.log(req.user);
   raw.creator = req.user.id;
   raw.createdOn = Date.now();
   raw.rejected = false;
@@ -113,7 +113,7 @@ exports.publish = function (req, res) {
     if (!ad.published) {
       ad.published = true;
       ad.token = jwt.sign({
-        _id: ad._id
+        id: ad._id
       }, config.secrets.session);
     }
     ad.save(function (err) {
@@ -133,12 +133,14 @@ exports.public = function (req, res) {
     if (!ad) {
       return res.send(404);
     }
-    if (!ad.published) {
-      return res.send(403, "This ad is not published");
-    }
-    jwt.verify(req.query.token, config.secrets.session, function (err) {
+    jwt.verify(req.query.token, config.secrets.session, function (err, decoded) {
       if (err) {
         return res.send(403, "Invalid token: " + req.query.token);
+      }
+      if (decoded.id !== ad._id.toString()) {
+        console.log(decoded);
+        console.log(ad);
+        return res.send(403, "Invalid id in token");
       }
       return res.json(200, ad);
     });
