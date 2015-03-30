@@ -11,7 +11,7 @@ var sanitizeHtml = require('sanitize-html');
 
 // Get list of ads
 exports.index = function (req, res) {
-  Ad.find(req.query).populate('creator').exec(function (err, ads) {
+  Ad.find(req.query).populate('creator', 'userId name').exec(function (err, ads) {
     if (err) {
       return handleError(res, err);
     }
@@ -21,7 +21,7 @@ exports.index = function (req, res) {
 
 // Get a single ad
 exports.show = function (req, res) {
-  Ad.findById(req.params.id).populate('creator').exec(function (err, ad) {
+  Ad.findById(req.params.id).populate('creator', 'userId name').exec(function (err, ad) {
     if (err) {
       return handleError(res, err);
     }
@@ -47,7 +47,7 @@ exports.create = function (req, res) {
     if (err) {
       return handleError(res, err);
     }
-    Ad.findById(ad._id).populate('creator').exec(function (err, populatedAd) {
+    Ad.findById(ad._id).populate('creator', 'userId name').exec(function (err, populatedAd) {
       return res.json(201, populatedAd);
     });
   });
@@ -129,7 +129,7 @@ exports.publish = function (req, res) {
 };
 
 exports.review = function (req, res) {
-  Ad.findById(req.params.id).populate('creator').exec(function (err, ad) {
+  Ad.findById(req.params.id).populate('creator', 'userId name').exec(function (err, ad) {
     if (err) {
       return handleError(res, err);
     }
@@ -146,7 +146,7 @@ exports.review = function (req, res) {
 };
 
 exports.public = function (req, res) {
-  Ad.findById(req.params.id).populate('creator').exec(function (err, ad) {
+  Ad.findById(req.params.id).populate('creator', 'userId name').exec(function (err, ad) {
     if (err) {
       return handleError(res, err);
     }
