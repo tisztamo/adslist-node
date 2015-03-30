@@ -18,6 +18,7 @@ angular.module('adslistApp')
 
     $scope.saveAd = function () {
       $scope.ad.approved = false;
+      $scope.ad.rejected = false;
       $scope.ad.status = 'waitingforreview';
       $scope.ad.$save();
     };

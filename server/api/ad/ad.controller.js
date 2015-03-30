@@ -125,6 +125,23 @@ exports.publish = function (req, res) {
   });
 };
 
+exports.review = function (req, res) {
+  Ad.findById(req.params.id).populate('creator').exec(function (err, ad) {
+    if (err) {
+      return handleError(res, err);
+    }
+    if (!ad) {
+      return res.send(404);
+    }
+    ad.status = "reviewed";
+    ad.approved = req.body.approved;
+    ad.rejected = !req.body.approved;
+    ad.save();
+    
+    return res.json(200, ad);
+  });
+};
+
 exports.public = function (req, res) {
   Ad.findById(req.params.id).populate('creator').exec(function (err, ad) {
     if (err) {
