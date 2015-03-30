@@ -68,6 +68,9 @@ exports.update = function (req, res) {
     if (!ad) {
       return res.send(404);
     }
+
+    req.body.text = clean(req.body.text);
+
     var updated = _.merge(ad, req.body);
     //Only admins can change the approved flag, normal edits end in unapproved state
     if (!auth.hasRole('admin') && !req.body.approved) {
