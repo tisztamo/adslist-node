@@ -117,7 +117,7 @@ exports.publish = function (req, res) {
       ad.published = true;
       ad.token = jwt.sign({
         id: ad._id
-      }, config.secrets.session);
+      }, config.secrets.publication);
     }
     ad.save(function (err) {
       if (err) {
@@ -153,7 +153,7 @@ exports.public = function (req, res) {
     if (!ad) {
       return res.send(404);
     }
-    jwt.verify(req.query.token, config.secrets.session, function (err, decoded) {
+    jwt.verify(req.query.token, config.secrets.publication, function (err, decoded) {
       if (err) {
         return res.send(403, "Invalid token: " + req.query.token);
       }
