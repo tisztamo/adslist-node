@@ -1,7 +1,8 @@
 # Known security issues
 
-## 1. XSS in ad editing
-which allows injecting script to the admins session during approval.
+## 1. XSS
+- Missing sanitization in ad editing. It allows injecting a script to the admins session during approval.
+- Reflected DOM XSS on the public page in the token REST parameter (after the last / )
 
 ## 2. Broken token protection in publication
 Valid publication token can be created by registering a user using the ad id as user id and logging in. Even non-published ads can be displayed on the public site this way.
