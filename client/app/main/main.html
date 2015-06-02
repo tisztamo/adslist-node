@@ -14,7 +14,7 @@
       <ul ng-repeat="ad in ads">
         <li>
           <span class="text-muted">{{ad.createdOn | date : short}} {{ad.creator.name}}</span>
-          <span ng-bind-html="ad.text | totrusted"></span>
+          <span ng-bind-html="ad.text"></span>
           <span ng-switch="ad.published">
               <div ng-switch-when="true">
                 Public under <a href="{{publishedUrl(ad)}}">{{publishedUrl(ad) | limitTo : 100}}...</a>
@@ -46,7 +46,7 @@
       <ul class="nav nav-tabs">
         <li>
           <a href="#">
-            <span ng-bind-html="previewText | totrusted"></span>
+            <span ng-bind-html="previewText"></span>
           </a>
         </li>
       </ul>

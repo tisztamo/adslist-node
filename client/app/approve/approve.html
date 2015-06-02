@@ -8,7 +8,7 @@
         <li>
           <a href="#">
             <span class="text-muted">{{ad.createdOn | date : short}} {{ad.creator.name}}</span>
-            <strong ng-bind-html="ad.text | totrusted"></strong>
+            <strong ng-bind-html="ad.text"></strong>
           </a>
         </li>
         <li>
