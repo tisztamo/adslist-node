@@ -14,7 +14,8 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-12">
-      <span ng-bind-html="ad.text | totrusted"></span>
+      <span ng-bind-html="ad.text"></span>
+      <span ng-show="error">{{error}}</span>
       <span class="input-group-btn">
     </div>
   </div>

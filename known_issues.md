@@ -16,13 +16,10 @@ Personal info of the creator is leaked in the ad
 ## 5. Race condition
 in the approve workflow allows editing the ad while it is in review.
 
-## 6. XSS
-Reflected DOM XSS on the public page in the token REST parameter (after the last / )
-
-## 7. CSRF
+## 6. CSRF
 Bearer token is distributed in a cookie and the cookie validates a request without the authorization header which opens the door for CSRF
 
-## 8. Broken access control in API
+## 7. Broken access control in API
 - Ad properties can be edited, ad can published, rejected etc without access control.
 - Ad of another user can be accessed and modified through the api.
 

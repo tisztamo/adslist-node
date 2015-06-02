@@ -9,6 +9,7 @@ angular.module('adslistApp')
     $http.get('/api/ads/public/' + $stateParams.id + '?token=' + $stateParams.token).success(function (ad) {
       $scope.ad = ad;
     }).error(function (error) {
-      $scope.ad.text = 'Error loading ad: ' + error;
+      $scope.ad.text = 'Error loading ad!';
+      $scope.error = error;
     });
   });
