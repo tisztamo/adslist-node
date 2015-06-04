@@ -21,7 +21,8 @@ User.find({}).remove(function () {
     provider: 'local',
     name: 'Test User',
     email: 'test@test.com',
-    password: 'test'
+    password: 'test',
+    role: 'user'
   }, function () {
     console.log('finished populating users');
     var admin = User.findOne({

@@ -34,7 +34,7 @@ exports.show = function (req, res) {
 
 exports.create = function (req, res) {
   var raw = req.body;
-  if (!auth.hasRole('admin')) {
+  if (!auth.hasRole(req.user, 'admin')) {
     raw.approved = false;
     raw.status = 'waitingforreview';
   }
@@ -69,11 +69,17 @@ exports.update = function (req, res) {
       return res.send(404);
     }
 
+    // Do not allow editing while in review - except for admins
+    if (ad.status === "inreview" && auth.hasRole(req.user, "admin") !== true) {
+      console.log("400");
+      return res.send(400);
+    }
+    
     req.body.text = clean(req.body.text);
 
     var updated = _.merge(ad, req.body);
     //Only admins can change the approved flag, normal edits end in unapproved state
-    if (!auth.hasRole('admin') && !req.body.approved) {
+    if (!auth.hasRole(req.user, 'admin') && !req.body.approved) {
       updated.status = "waitingforreview";
       updated.approved = false;
       updated.rejected = false;

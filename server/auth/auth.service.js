@@ -43,15 +43,25 @@ function isAuthenticated() {
 }
 
 /**
+* Returns true if the user (req.user object) has at least the required role
+*/
+function hasRole(user, roleRequired) {
+  if (typeof user !== "object" || typeof user.role !== "string" || typeof roleRequired !== "string") {
+    throw new Error("Invalid parameters");
+  }
+  return config.userRoles.indexOf(user.role) >= config.userRoles.indexOf(roleRequired);
+}
+
+/**
  * Checks if the user role meets the minimum requirements of the route
  */
-function hasRole(roleRequired) {
+function roleChecker(roleRequired) {
   if (!roleRequired) throw new Error('Required role needs to be set');
 
   return compose()
     .use(isAuthenticated())
     .use(function meetsRequirements(req, res, next) {
-      if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
+      if (hasRole(req.user, roleRequired)) {
         next();
       } else {
         res.send(403);
@@ -84,5 +94,6 @@ function setTokenCookie(req, res) {
 
 exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
+exports.roleChecker = roleChecker;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;

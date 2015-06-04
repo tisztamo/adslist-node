@@ -11,7 +11,7 @@ router.get('/', auth.isAuthenticated(), controller.index);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', auth.isAuthenticated(), controller.create);
 router.post('/:id', auth.isAuthenticated(), controller.update);
-router.post('/:id/review', auth.hasRole('admin'), controller.review);
+router.post('/:id/review', auth.roleChecker('admin'), controller.review);
 router.post('/:id/token', auth.isAuthenticated(), controller.publish);
 router.put('/:id', auth.isAuthenticated(), controller.update);
 router.patch('/:id', auth.isAuthenticated(), controller.update);
