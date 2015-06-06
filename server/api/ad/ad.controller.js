@@ -28,6 +28,9 @@ exports.show = function (req, res) {
     if (!ad) {
       return res.send(404);
     }
+    if (!ad.hasAccess(req.user)) {
+      return res.send(403);
+    }
     return res.json(ad);
   });
 };
@@ -38,7 +41,6 @@ exports.create = function (req, res) {
     raw.approved = false;
     raw.status = 'waitingforreview';
   }
-  console.log(req.user);
   raw.creator = req.user.id;
   raw.createdOn = Date.now();
   raw.rejected = false;
@@ -71,15 +73,18 @@ exports.update = function (req, res) {
 
     // Do not allow editing while in review - except for admins
     if (ad.status === "inreview" && auth.hasRole(req.user, "admin") !== true) {
-      console.log("400");
       return res.send(400);
     }
-    
+
+    if (!ad.hasAccess(req.user)) {
+      return res.send(403);
+    }
+
     req.body.text = clean(req.body.text);
 
     var updated = _.merge(ad, req.body);
     //Only admins can change the approved flag, normal edits end in unapproved state
-    if (!auth.hasRole(req.user, 'admin') && !req.body.approved) {
+    if (!(auth.hasRole(req.user, 'admin') && req.body.approved)) {
       updated.status = "waitingforreview";
       updated.approved = false;
       updated.rejected = false;
@@ -101,6 +106,9 @@ exports.destroy = function (req, res) {
     }
     if (!ad) {
       return res.send(404);
+    }
+    if (!ad.hasAccess(req.user)) {
+      return res.send(403);
     }
     ad.remove(function (err) {
       if (err) {
@@ -146,7 +154,7 @@ exports.review = function (req, res) {
     ad.approved = req.body.approved;
     ad.rejected = !req.body.approved;
     ad.save();
-    
+
     return res.json(200, ad);
   });
 };

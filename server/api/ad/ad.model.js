@@ -2,7 +2,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
+  Schema = mongoose.Schema,
+    auth = require('../../auth/auth.service');
 
 var AdSchema = new Schema({
   creator: {
@@ -17,5 +18,9 @@ var AdSchema = new Schema({
   published: Boolean,
   token: String
 });
+
+AdSchema.methods.hasAccess = function (user) {
+  return auth.hasAdAccess(user, this);
+};
 
 module.exports = mongoose.model('Ad', AdSchema);

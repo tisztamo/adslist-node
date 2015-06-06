@@ -23,16 +23,13 @@ function isAuthenticated() {
       if (req.query && req.query.hasOwnProperty('access_token')) {
         req.headers.authorization = 'Bearer ' + req.query.access_token;
       }
-      // allow access_token to be passed through a cookie as well
-      if (!req.headers.authorization && req.cookies && req.cookies.hasOwnProperty('token')) {
-        req.headers.authorization = 'Bearer ' + req.cookies.token.substr(1, req.cookies.token.length - 2);
-      }
-
       validateJwt(req, res, next);
     })
     // Attach user to request
     .use(function (req, res, next) {
-      User.findOne({userId: req.user.id}, function (err, user) {
+      User.findOne({
+        userId: req.user.id
+      }, function (err, user) {
         if (err) return next(err);
         if (!user) return res.send(401);
 
@@ -43,8 +40,8 @@ function isAuthenticated() {
 }
 
 /**
-* Returns true if the user (req.user object) has at least the required role
-*/
+ * Returns true if the user (req.user object) has at least the required role
+ */
 function hasRole(user, roleRequired) {
   if (typeof user !== "object" || typeof user.role !== "string" || typeof roleRequired !== "string") {
     throw new Error("Invalid parameters");
@@ -92,8 +89,16 @@ function setTokenCookie(req, res) {
   res.redirect('/');
 }
 
+function hasAdAccess(user, ad) {
+  if (typeof user !== "object" || typeof user.role !== "string" || typeof ad !== "object") {
+    throw new Error("Invalid parameters");
+  }
+  return ad.creator.equals(user._id) || hasRole(user, 'admin'); 
+}
+
 exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
 exports.roleChecker = roleChecker;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
+exports.hasAdAccess = hasAdAccess;
