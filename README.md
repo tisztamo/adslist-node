@@ -4,6 +4,7 @@ A vulnerable Node.js application
 ## requirements
 - MongoDB
 - Grunt
+- Bower
 
 ## install
 
