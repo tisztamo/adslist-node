@@ -23,3 +23,6 @@ Bearer token is distributed in a cookie and the cookie validates a request witho
 - Ad properties can be edited, ad can published, rejected etc without access control.
 - Ad of another user can be accessed and modified through the api.
 
+### 8. Admin account takeover
+A user with the user id 'admin' can be registered, he will be equivalent with the original admin
+
