@@ -7,7 +7,6 @@ var Ad = require('./ad.model');
 var auth = require('../../auth/auth.service');
 var jwt = require('jsonwebtoken');
 var config = require('../../config/environment');
-var sanitizeHtml = require('sanitize-html');
 
 // Get list of ads
 exports.index = function (req, res) {
@@ -165,9 +164,22 @@ exports.public = function (req, res) {
 };
 
 function clean(dirty) {
-  return sanitizeHtml(dirty, {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img'])
-  });
+  return dirty.
+    replace(/<script/gi, "").
+    replace(/<form>/gi, "").
+    replace(/<object>/gi, "").
+    replace(/<applet>/gi, "").
+    replace(/<style>/gi, "").
+    replace(/onload/gi, "").
+    replace(/onerror/gi, "").
+    replace(/onsubmit/gi, "").
+    replace(/onclick/gi, "").
+    replace(/onmouseover/gi, "").
+    replace(/onmouseout/gi, "").
+    replace(/onchange/gi, "").
+    replace(/onkeypress/gi, "").
+    replace(/onkeydown/gi, "").
+    replace(/onkeyup/gi, "");
 }
 
 function handleError(res, err) {
